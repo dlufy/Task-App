@@ -5,7 +5,6 @@ const router = new express.Router()
 
 //to create a new user
 router.post('/users',async (req, res)=>{
-
     const user = new User(req.body)
     try{
         await user.save()
@@ -16,6 +15,16 @@ router.post('/users',async (req, res)=>{
    }
 })
 
+//for user login
+
+router.post('/users/login',async (req, res)=>{
+    try{
+        const user = await User.findByCredentionals(req.body.email,req.body.password)
+        res.send(user)
+    }catch(error){
+        res.status(500).send(error)
+    }
+})
 //to get all user
 router.get('/users',async (req, res)=>{
     try{
@@ -46,13 +55,14 @@ router.patch('/users/:id',async (req, res)=>{
         return res.status(400).send({error:'update is not allowed with these fields'})
     }
     try{
-
-        const user = await User.findByIdAndUpdate(req.params.id, req.body, {new:true, runValidators:true })
+        const user = await User.findById(req.params.id)
+        updates.forEach((update)=> user[update] = req.body[update])
+        await user.save()
         if(user)
             return res.send(user)
         res.status(404).send({error:'no user found'})
     }catch(error){
-        res.status(500).send(error)
+        res.status(500).send({error:'error happend'})
     }
 })
 
