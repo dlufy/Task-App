@@ -1,6 +1,9 @@
 const mongoose = require('mongoose')
 const validator = require('validator')
 const bcrypt = require('bcryptjs')
+const jwt = require('jsonwebtoken')
+const SECRET = require('./utils/util')
+const Task = require('../models/task')
 
 const userSchema = mongoose.Schema({
     name:{
@@ -36,11 +39,44 @@ const userSchema = mongoose.Schema({
                     throw new Error('short password password length must be >= 8')
                 }
             }
-        }
+        },
+        tokens:[{
+                token:{
+                    type:String,
+                    required:true
+                }
+            }]
+},
+    {
+    timestamps: true
 })
+
+userSchema.virtual('tasks',{
+    ref:'Task',
+    localField :'_id',
+    foreignField : 'creater'
+})
+
+userSchema.methods.generateAuthToken = async function () {
+     const user = this
+    const token = jwt.sign({ _id:user._id.toString() }, SECRET)
+
+    user.tokens = user.tokens.concat({ token })
+    await user.save()
+    return token
+}
+
+userSchema.methods.toJSON = function() {
+    const user = this
+    const userObject = user.toObject()
+    delete userObject.password
+    delete userObject.tokens
+
+    return userObject
+}
 userSchema.statics.findByCredentionals = async (email, password) => {
+
     const user = await User.findOne({ email })
-    
     if(!user){
         throw new Error('Unable to login!!!')
     }
@@ -61,6 +97,14 @@ userSchema.pre('save', async function(next){
     }
     next()
 })
+
+//Delete User Tasks when user is deleted
+userSchema.pre('remove', async function (next) {
+    const user = this
+    await Task.deleteMany({ creater : user._id })
+})
+
+
 const User = mongoose.model('User',userSchema)
 
 module.exports = User
