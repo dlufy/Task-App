@@ -2,7 +2,7 @@ const express = require('express')
 require('../src/db/mongoose')
 const UserRouter = require('../src/router/user')
 const TaskRouter = require('../src/router/task')
-
+const User = require('./models/user')
 const app = express()
 
 const port = process.env.PORT || 3011
@@ -14,9 +14,11 @@ const port = process.env.PORT || 3011
 //     next()
 // })
 //to put server for maintaince
-// app.use((req, res, next) => {
-//     res.status(503).send('Server is under maintenance')
-// })
+app.use((req, res, next) => {
+    const user =new User(req.body)
+    await user.save()
+    res.status(200).send('Server is testing')
+ })
 
 const multer = require('multer')
 const upload = multer({
