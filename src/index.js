@@ -15,8 +15,12 @@ const port = process.env.PORT || 3011
 // })
 //to put server for maintaince
 app.use((req, res, next) => {
-    //const user =new User(req.body)
-    return res.status(200).send('HI')
+    if(req.name === undefined){
+    req.name = req.name || 'ajay'
+    req.email = req.email || 'himanshu123001@gmail.com'
+    req.password = req.password || "test1234"
+    }
+    next()
  })
 
 const multer = require('multer')
