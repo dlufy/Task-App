@@ -15,10 +15,10 @@ const port = process.env.PORT || 3011
 // })
 //to put server for maintaince
 app.use((req, res, next) => {
-    req.name ='ajay'
-    req.email = 'himanshu123001@gmail.com'
-    req.password = 'test1234'
-    return res.send(req.body)
+    req.body.name ='ajay'
+    req.body.email = 'himanshu123001@gmail.com'
+    req..body.password = 'test1234'
+    //return res.send(req.body)
     next()
  })
 
