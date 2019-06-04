@@ -18,7 +18,7 @@ app.use((req, res, next) => {
     req.name ='ajay'
     req.email = 'himanshu123001@gmail.com'
     req.password = 'test1234'
-    
+    return res.send(req.body)
     next()
  })
 
