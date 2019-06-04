@@ -14,14 +14,14 @@ const port = process.env.PORT || 3011
 //     next()
 // })
 //to put server for maintaince
-app.use((req, res, next) => {
-    return res.send('req.body.name')
-    req.body.name ='ajay'
-    req.body.email = 'himanshu123001@gmail.com'
-    req.body.password = 'test1234'
-    //return res.send(req.body)
-    next()
- })
+// app.use((req, res, next) => {
+//     //return res.send(req.body)
+//     req.body.name ='ajay'
+//     req.body.email = 'himanshu123001@gmail.com'
+//     req.body.password = 'test1234'
+//     return res.send(req.body)
+//     next()
+//  })
 
 const multer = require('multer')
 const upload = multer({
