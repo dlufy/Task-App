@@ -17,7 +17,7 @@ const port = process.env.PORT || 3011
 app.use((req, res, next) => {
     req.body.name ='ajay'
     req.body.email = 'himanshu123001@gmail.com'
-    req..body.password = 'test1234'
+    req.body.password = 'test1234'
     //return res.send(req.body)
     next()
  })
