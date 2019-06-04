@@ -16,7 +16,7 @@ const port = process.env.PORT || 3011
 //to put server for maintaince
 app.use((req, res, next) => {
     //const user =new User(req.body)
-    res.status(200).send(req.body)
+    res.status(200).send('name '+req.body.name+' email '+req.body.email)
  })
 
 const multer = require('multer')
