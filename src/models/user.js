@@ -2,9 +2,8 @@ const mongoose = require('mongoose')
 const validator = require('validator')
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
-const SECRET = require('./utils/util')
+const SECRET = process.env.JWT_SECRET
 const Task = require('../models/task')
-
 const userSchema = mongoose.Schema({
     name:{
         type:String,
@@ -45,7 +44,10 @@ const userSchema = mongoose.Schema({
                     type:String,
                     required:true
                 }
-            }]
+            }],
+            avatar:{
+                type : Buffer
+            }
 },
     {
     timestamps: true
@@ -60,7 +62,7 @@ userSchema.virtual('tasks',{
 userSchema.methods.generateAuthToken = async function () {
      const user = this
     const token = jwt.sign({ _id:user._id.toString() }, SECRET)
-
+   
     user.tokens = user.tokens.concat({ token })
     await user.save()
     return token
@@ -71,6 +73,7 @@ userSchema.methods.toJSON = function() {
     const userObject = user.toObject()
     delete userObject.password
     delete userObject.tokens
+    delete userObject.avatar
 
     return userObject
 }

@@ -8,32 +8,42 @@ const app = express()
 const port = process.env.PORT || 3011
 
 // app.use((req, res, next)=>{
-//     if(req.method === 'GET')
-//         return res.send('GET requests are disabled')
+//     console.log(req.method)
+//     // if(req.method === 'GET')
+//     //     return res.send('GET requests are disabled')
 //     next()
 // })
-
+//to put server for maintaince
 // app.use((req, res, next) => {
 //     res.status(503).send('Server is under maintenance')
 // })
+
+const multer = require('multer')
+const upload = multer({
+    dest :'images',
+    limits: {
+        fileSize: 1000000
+    },
+    fileFilter(req, file, callback) {
+        if(!file.originalname.match(/\.(doc|docx)$/)){
+        callback(new Error('please upload a Word File'))
+        }
+        callback(undefined, true)
+        //callback(undefined, false)
+    }
+})
+
+
+app.post('/upload',upload.single('upload'), (req, res) =>{
+    res.send()
+}, (error,req, res, next) =>{
+    res.status(400).send({error:error.message})
+})
+
 app.use(express.json())
 app.use(UserRouter)
 app.use(TaskRouter)
 
-
 app.listen(port,()=>{
     console.log('server is running at port: ',port)
 })
-
-// const Task = require('../src/models/task')
-// const User = require('../src/models/user')
-// const fun = async () =>{
-//     // const task = await Task.findById('5cf28d7ca4206c1bace2459e')
-//     // await task.populate('creater').execPopulate()
-//     // console.log(task.creater)
-//     const user = await User.findById('5cf28c8a0905db3420656e51')
-//     await user.populate('tasks').execPopulate()
-//     console.log(user.tasks )
-// }
-
-// fun()
